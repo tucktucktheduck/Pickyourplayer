@@ -328,7 +328,8 @@ async function doRefresh(){
   const btn=document.getElementById('rfbtn');
   btn.textContent='↻ ...';btn.disabled=true;
   try{
-    const r=await fetch('/api/scores',{signal:AbortSignal.timeout(8000)});
+    const r = await fetch('/api/scores?t=' + Date.now());
+
     if(!r.ok)throw new Error('proxy '+r.status);
     const data=await r.json();
     const g=data.events?.find(e=>{
