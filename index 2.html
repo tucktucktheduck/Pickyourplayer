@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PICK YOUR PLAYER 🏒</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--surface:#111114;--surface2:#17171b;--border:#222226;--text:#f0f0f0;--muted:#555;--muted2:#333;--car:#CC0000;--vgk:#B4975A;--green:#00E676;--red:#FF3B3B;--yellow:#FFD600;--blue:#2979FF;--purple:#D500F9;--orange:#FF6D00;--teal:#00BCD4;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;font-size:13px;}
+.app{max-width:900px;margin:0 auto;padding:12px 12px 90px;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:12px;gap:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:4px;line-height:1;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:.58rem;letter-spacing:3px;color:var(--muted);margin-top:2px;}
+.hdr-right{display:flex;gap:5px;align-items:center;}
+.ibtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+.syncbadge{font-size:.58rem;letter-spacing:1px;padding:2px 7px;border-radius:10px;border:1px solid;}
+.syncbadge.ok{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.08);}
+.syncbadge.err{color:var(--red);border-color:var(--red);background:rgba(255,59,59,.08);}
+.syncbadge.spin{color:var(--yellow);border-color:var(--yellow);background:rgba(255,214,0,.08);}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;align-items:center;}
+.tm{text-align:center;}
+.tn{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;}
+.tn.car{color:var(--car);}.tn.vgk{color:var(--vgk);}
+.ts{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,9vw,4rem);line-height:1;}
+.ts.car{color:var(--car);}.ts.vgk{color:var(--vgk);}
+.tq{display:flex;gap:3px;justify-content:center;margin-top:3px;flex-wrap:wrap;}
+.qc{font-size:.58rem;padding:1px 4px;background:var(--surface2);border-radius:3px;color:var(--muted);}
+.mid{text-align:center;}.mc{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--yellow);}
+.mp{font-size:.6rem;color:var(--muted);letter-spacing:2px;}
+.live{display:inline-flex;align-items:center;gap:3px;background:rgba(255,59,59,.12);border:1px solid rgba(255,59,59,.3);color:var(--red);font-size:.58rem;letter-spacing:2px;padding:2px 6px;border-radius:20px;margin-top:3px;}
+.dot{width:5px;height:5px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.sl{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.div{height:1px;background:var(--border);margin:12px 0;}
+.btn{background:var(--yellow);color:#000;border:none;padding:7px 14px;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:2px;border-radius:5px;cursor:pointer;}
+.btn.gh{background:transparent;color:var(--yellow);border:1px solid var(--yellow);}
+.btn.full{width:100%;font-size:1.05rem;padding:11px;}
+.setup{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;}
+.srow{display:flex;gap:6px;margin-bottom:8px;align-items:center;}
+.sinp{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:'DM Mono',monospace;font-size:.8rem;border-radius:5px;min-width:0;}
+.htags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;min-height:10px;}
+.htag{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;border:1px solid;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1px;}
+.htag button{background:none;border:none;cursor:pointer;font-size:.8rem;opacity:.5;color:inherit;}
+.cpick{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.copt{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+.copt.sel{border-color:#fff;transform:scale(1.15);}
+.who{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:11px;}
+.wchip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;}
+.ptleg{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11px;}
+.ptchip{font-size:.6rem;padding:2px 7px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+.ptchip span{font-family:'Bebas Neue',sans-serif;font-size:.8rem;margin-left:2px;}
+.tsec{margin-bottom:14px;}
+.thdr{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.tbadge{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:3px;padding:2px 9px;border-radius:4px;}
+.tbadge.car{background:rgba(204,0,0,.1);color:var(--car);border:1px solid rgba(204,0,0,.3);}
+.tbadge.vgk{background:rgba(180,151,90,.1);color:var(--vgk);border:1px solid rgba(180,151,90,.3);}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 10px;cursor:pointer;position:relative;overflow:hidden;}
+.pc .stripe{position:absolute;top:0;left:0;right:0;height:3px;}
+.pc.onice{box-shadow:0 0 0 1px var(--green);}
+.pc .pn{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;letter-spacing:.5px;line-height:1.1;margin-bottom:1px;}
+.pc .pp{font-size:.58rem;color:var(--muted);letter-spacing:2px;margin-bottom:5px;}
+.pc .pgp{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;line-height:1;}
+.pc .pgp.car{color:var(--car);}.pc .pgp.vgk{color:var(--vgk);}
+.pc .pst{font-size:.58rem;color:var(--muted);}
+.pc .pheld{font-size:.58rem;color:var(--yellow);margin-top:3px;}
+.pc .onicebadge{position:absolute;top:5px;right:6px;background:var(--green);color:#000;font-size:.5rem;padding:1px 4px;border-radius:3px;font-weight:800;}
+.otags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.otag{font-size:.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid transparent;}
+.phint{font-size:.6rem;color:var(--muted2);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px;margin-top:4px;}
+.lbg{display:grid;grid-template-columns:repeat(auto-fill,minmax(126px,1fr));gap:6px;margin-bottom:12px;}
+.lbc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 10px;position:relative;overflow:hidden;}
+.lbc .lbs{position:absolute;top:0;left:0;right:0;height:3px;}
+.lbhn{font-family:'Barlow Condensed',sans-serif;font-size:.92rem;font-weight:800;letter-spacing:1px;margin-bottom:2px;}
+.lbsc{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:1;color:var(--green);}
+.lbpk{font-size:.6rem;color:var(--muted);margin-top:2px;}
+.lbrk{position:absolute;top:7px;right:8px;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:var(--muted2);}
+.lbrk.top{color:var(--yellow);}
+.feed{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;margin-bottom:12px;}
+.fe{display:flex;align-items:baseline;gap:5px;font-size:.67rem;padding:5px 8px;border-radius:5px;background:var(--surface);border-left:2px solid var(--border);}
+.few{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.5px;}
+.fed{flex:1;color:var(--muted);}
+.fep{font-family:'Bebas Neue',sans-serif;font-size:.85rem;margin-left:auto;}
+.fet{font-size:.55rem;color:var(--muted2);margin-right:4px;}
+.nof{font-size:.7rem;color:var(--muted);text-align:center;padding:14px 0;}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;width:100%;max-width:360px;max-height:92vh;overflow-y:auto;position:relative;}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;margin-bottom:3px;}
+.ms{font-size:.67rem;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.mc2{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;}
+.pl{display:flex;flex-direction:column;gap:4px;}
+.pr{display:flex;align-items:center;gap:7px;padding:7px 9px;background:var(--surface2);border:1px solid var(--border);border-radius:5px;}
+.prn{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.88rem;}
+.prc{font-size:.6rem;color:var(--muted);flex:1;margin-left:3px;}
+.prb{font-family:'Bebas Neue',sans-serif;font-size:.8rem;padding:3px 9px;border-radius:4px;border:none;cursor:pointer;}
+.prb.pi{background:var(--yellow);color:#000;}
+.prb.di{background:rgba(255,59,59,.15);color:var(--red);border:1px solid rgba(255,59,59,.3);}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;}
+.eb{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 7px;border-radius:6px;cursor:pointer;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;}
+.ep{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;display:block;margin-bottom:2px;}
+#toasts{position:fixed;bottom:66px;right:12px;z-index:999;display:flex;flex-direction:column;gap:5px;max-width:240px;pointer-events:none;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 11px;animation:ti .25s ease,to .3s ease 3.3s forwards;}
+.ttt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:1px;margin-bottom:1px;}
+.ttb{font-size:.65rem;color:var(--muted);}
+.ttp{font-family:'Bebas Neue',sans-serif;font-size:1rem;margin-top:2px;}
+@keyframes ti{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes to{from{opacity:1}to{opacity:0;transform:translateX(28px)}}
+.bb{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:7px 12px;gap:8px;z-index:100;}
+.rft{font-size:.58rem;color:var(--muted);}
+.rst{font-size:.6rem;color:var(--muted2);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.onicebanner{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);padding:6px 10px;border-radius:6px;margin-bottom:8px;font-size:.66rem;color:var(--green);}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+<div class="app">
+<div class="hdr">
+  <div><div class="logo">PICK YOUR PLAYER</div><div class="logo-sub" id="sub">🏒 STANLEY CUP FINAL G1 · CAR vs VGK</div></div>
+  <div class="hdr-right"><span class="syncbadge spin" id="syncbadge">SYNC</span><button class="ibtn" onclick="openRules()">?</button></div>
+</div>
+
+<div class="sb">
+  <div class="tm"><div class="tn car">CAR</div><div class="ts car" id="sc-car">0</div><div class="tq" id="tq-car"></div></div>
+  <div class="mid"><div class="mc" id="clk">--:--</div><div class="mp" id="qtr">PRE</div><div class="live"><span class="dot"></span>LIVE</div><div style="font-size:.56rem;color:var(--muted);margin-top:2px;">SC FINAL G1</div></div>
+  <div class="tm"><div class="tn vgk">VGK</div><div class="ts vgk" id="sc-vgk">0</div><div class="tq" id="tq-vgk"></div></div>
+</div>
+
+<div id="setup-sec">
+  <div class="sl">Who's playing?</div>
+  <div class="setup">
+    <div class="sl" style="margin-bottom:5px;">Pick your color</div>
+    <div class="cpick" id="cpick"></div>
+    <div class="srow"><input class="sinp" id="ninp" placeholder="Your name" maxlength="18"/><button class="btn" onclick="addHuman()">+ ADD</button></div>
+    <div class="htags" id="htags"></div>
+    <button class="btn full" id="startbtn" onclick="startGame()" style="display:none;">START GAME →</button>
+  </div>
+</div>
+
+<div id="game-sec" style="display:none;">
+  <div class="sl">Leaderboard</div>
+  <div class="lbg" id="lbg"></div>
+  <div class="div"></div>
+  <div class="ptleg">
+    <div class="ptchip">GOAL<span style="color:var(--green)">+25</span></div>
+    <div class="ptchip">HAT TRICK<span style="color:var(--purple)">+50</span></div>
+    <div class="ptchip">A1<span style="color:var(--green)">+15</span></div>
+    <div class="ptchip">A2<span style="color:var(--green)">+10</span></div>
+    <div class="ptchip">SHOT ON<span style="color:var(--blue)">+3</span></div>
+    <div class="ptchip">MISS<span style="color:var(--muted)">+2</span></div>
+    <div class="ptchip">HIT<span style="color:var(--orange)">+3</span></div>
+    <div class="ptchip">GOT HIT<span style="color:var(--teal)">+1</span></div>
+    <div class="ptchip">BLOCK<span style="color:var(--orange)">+3</span></div>
+    <div class="ptchip">SAVE<span style="color:var(--teal)">+2</span></div>
+    <div class="ptchip">BIG SAVE<span style="color:var(--yellow)">+8</span></div>
+    <div class="ptchip">SHUTOUT<span style="color:var(--purple)">+50</span></div>
+    <div class="ptchip">FACEOFF WIN<span style="color:var(--green)">+2</span></div>
+    <div class="ptchip">TAKEAWAY<span style="color:var(--orange)">+4</span></div>
+    <div class="ptchip">FIGHT<span style="color:var(--purple)">+15</span></div>
+    <div class="ptchip" style="background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);">ON-ICE SHIFT<span style="color:var(--green)">+2</span></div>
+    <div class="ptchip" style="background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);">ON-ICE GOAL<span style="color:var(--green)">+10</span></div>
+    <div class="ptchip" style="background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);">ON-ICE SHOT<span style="color:var(--green)">+1</span></div>
+    <div class="ptchip" style="background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);">ON-ICE HIT<span style="color:var(--green)">+1</span></div>
+    <div class="ptchip" style="background:rgba(0,230,118,.1);border-color:var(--green);color:var(--green);">ON-ICE SAVE<span style="color:var(--green)">+1</span></div>
+    <div class="ptchip">ON-ICE GA<span style="color:var(--red)">−3</span></div>
+    <div class="ptchip">PASS<span style="color:var(--blue)">+1</span></div>
+    <div class="ptchip">PENALTY<span style="color:var(--red)">−2</span></div>
+  </div>
+  <div class="onicebanner" id="oniceline">On ice now: nothing tracked yet</div>
+  <div class="sl" style="margin-bottom:5px;">Picking for →</div>
+  <div class="who" id="who"></div>
+  <div id="psec"></div>
+  <div class="div"></div>
+  <div class="sl">Event Feed (live from NHL API)</div>
+  <div class="feed" id="feed"><div class="nof">Events appear here automatically as they happen</div></div>
+  <div class="div"></div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <button class="btn gh" onclick="openAdd()">+ Add Player</button>
+    <button class="rst" onclick="confirmReset()">reset</button>
+  </div>
+</div>
+</div>
+
+<div class="bb">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <button class="btn gh" onclick="doRefresh()" id="rfbtn" style="font-size:.76rem;padding:4px 11px;">↻ LIVE</button>
+    <span class="rft" id="rft">--</span>
+  </div>
+  <span style="font-size:.56rem;color:var(--muted);">api-web.nhle.com</span>
+</div>
+
+<!-- RULES -->
+<div id="rules-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('rules-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('rules-mod')">✕</button>
+  <div class="mt" style="background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RULES</div>
+  <div class="ms">All events pulled from official NHL API every 20 seconds. Including who's on the ice.</div>
+  <div style="font-size:.7rem;color:var(--muted);line-height:1.7;">
+🥅 <b>GOAL +15</b> · 🅰️ ASSIST +8 (primary), +4 (secondary)<br>
+🎯 SHOT ON +2 · SHOT OFF +1 · MISSED SHOT +1<br>
+💥 HIT +2 · BLOCK +2 · TAKEAWAY +2 · GIVEAWAY −1<br>
+🧤 SAVE +1 · BIG SAVE +5 (high-danger) · 🚨 SHUTOUT +25<br>
+🥍 FACEOFF WIN +1 · LOSS −0.5<br>
+🟦 <b>ON-ICE +0.5 per shift</b> · ON-ICE FOR GOAL +3 · GA ON ICE −2<br>
+🥊 FIGHT +10 · FIGHT WON +5<br>
+🚨 PENALTY −3 · MAJOR PENALTY −5</div>
+  <div style="margin-top:12px;"><button class="btn full" onclick="cm('rules-mod')">GOT IT</button></div>
+</div></div></div>
+
+<!-- PICK MODAL -->
+<div id="pick-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('pick-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('pick-mod')">✕</button>
+  <div class="mt" id="pick-t">PICK</div><div class="ms" id="pick-s"></div>
+  <div class="pl" id="pick-l"></div>
+</div></div></div>
+
+<!-- EVENT MODAL -->
+<div id="evt-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('evt-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('evt-mod')">✕</button>
+  <div class="mt" id="evt-t">EVENT</div><div class="ms" id="evt-s"></div>
+  <div class="eg" id="evt-g"></div>
+</div></div></div>
+
+<!-- ADD MODAL -->
+<div id="add-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('add-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('add-mod')">✕</button>
+  <div class="mt">ADD PLAYER</div><div class="ms">Join mid-game</div>
+  <div class="cpick" id="cpick2"></div>
+  <div class="srow" style="margin-top:8px;"><input class="sinp" id="ninp2" placeholder="Name" maxlength="18"/><button class="btn" onclick="addMid()">ADD</button></div>
+</div></div></div>
+
+<script>
+// ─── CONFIG ───
+const NHL_API='/api/nhl?path=';
+const BIN_ID='6a1b8bb2ddf5aa59f77a3169';
+const BIN_KEY='$2a$10$S.z7u7MGOm3tZoh9sLbH8OvXa2cJtxgwQiiv4HO9SMC78vZ40hO4W';
+const BIN_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const PAL=['#FFD600','#00E676','#2979FF','#FF3B3B','#D500F9','#FF6D00','#00BCD4','#8BC34A','#FF5722','#9C27B0','#03A9F4','#FFC107','#E91E63','#4CAF50','#FF9800'];
+
+// SCORING — hockey chaos with on-ice tracking
+const EVT={
+  'goal':       {pts:25, label:'🥅 GOAL!!'},
+  'assist1':    {pts:15, label:'🅰️ Primary Assist'},
+  'assist2':    {pts:10, label:'🅰️ Secondary Assist'},
+  'shoton':     {pts:3,  label:'🎯 Shot on Goal'},
+  'shotoff':    {pts:2,  label:'↗ Missed Shot'},
+  'shotblocked':{pts:1,  label:'🛑 Shot Blocked'},
+  'hit':        {pts:3,  label:'💥 Hit Delivered'},
+  'gothit':     {pts:1,  label:'😤 Took a Hit'},
+  'block':      {pts:3,  label:'✋ Block'},
+  'save':       {pts:2,  label:'🧤 Save'},
+  'bigsave':    {pts:8,  label:'🛡️ Big Save'},
+  'shutout':    {pts:50, label:'🚨 SHUTOUT'},
+  'fow':        {pts:2,  label:'🥍 Faceoff Win'},
+  'fol':        {pts:-0.5,label:'🥍 Faceoff Loss'},
+  'takeaway':   {pts:4,  label:'🐍 Takeaway'},
+  'giveaway':   {pts:-1, label:'💸 Giveaway'},
+  'penalty':    {pts:-2, label:'🚨 Minor Penalty'},
+  'majorpen':   {pts:-3, label:'🚨 Major Penalty'},
+  'fight':      {pts:15, label:'🥊 Fight!'},
+  'fightwon':   {pts:10, label:'🥊 Fight Won (extra)'},
+  'hattrick':   {pts:50, label:'🎩 HAT TRICK!!'},
+  'firstshift': {pts:5,  label:'⛸️ First Shift Bonus'},
+  // ON-ICE BONUSES (auto-awarded to everyone on ice)
+  'onice_shift':{pts:2,  label:'⛸️ On Ice (shift)'},
+  'onice_goal': {pts:10, label:'🟢 ON ICE for GOAL'},
+  'onice_shot': {pts:1,  label:'🟢 On ice for Shot'},
+  'onice_hit':  {pts:1,  label:'🟢 On ice for Hit'},
+  'onice_save': {pts:1,  label:'🟢 On ice for Save'},
+  'onice_against':{pts:-3,label:'🔴 On ice for GA'},
+  'pass':       {pts:1,  label:'↗️ Pass'},
+};
+
+// ─── STATE ───
+let S={fixtureId:null,started:false,humans:[],picks:{},scores:{},log:{},apiSeen:{},shiftSeen:{}};
+let LIVE={score:{CAR:0,VGK:0},clock:'--:--',period:0,status:'pre',byP:{},homeTri:'CAR',awayTri:'VGK',homeName:'Carolina Hurricanes',awayName:'Vegas Golden Knights'};
+let ROSTERS={CAR:[],VGK:[]};
+let onIce={CAR:new Set(),VGK:new Set()};
+let myName=localStorage.getItem('pyp_myname')||null;
+let who=myName;
+let selColor=localStorage.getItem('pyp_mycolor')||PAL[0];
+let selColor2=PAL[2];
+let pendingEvt=null;
+let isSyncing=false,pendingSync=false;
+let gameId=null; // NHL gameId (numeric)
+
+// ─── SYNC ───
+function badge(s){const el=document.getElementById('syncbadge');if(s==='ok'){el.textContent='LIVE ✓';el.className='syncbadge ok';}else if(s==='err'){el.textContent='OFFLINE';el.className='syncbadge err';}else{el.textContent='SYNC...';el.className='syncbadge spin';}}
+async function push(){
+  if(isSyncing){pendingSync=true;return;}
+  isSyncing=true;badge('spin');
+  try{const r=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY,'X-Bin-Versioning':'false'},body:JSON.stringify(S)});badge(r.ok?'ok':'err');}catch(e){badge('err');}
+  isSyncing=false;
+  if(pendingSync){pendingSync=false;push();}
+}
+async function pull(){
+  try{
+    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
+    if(!r.ok)return;
+    const d=await r.json();
+    if(!d.record||!d.record.humans)return;
+    S=d.record;
+    if(myName&&!who)who=myName;
+    if(!who&&S.humans.length>0)who=S.humans[0].name;
+    renderLB();renderPlayers();renderFeed();renderWho();badge('ok');
+  }catch(e){badge('err');}
+}
+setInterval(()=>{if(S.started)pull();},5000);
+
+// ─── NHL API ───
+async function findGameId(){
+  // Find today's CAR vs VGK game
+  try{
+    const r=await fetch(`${NHL_API}/schedule/now`);
+    const d=await r.json();
+    for(const wk of(d.gameWeek||[])){
+      for(const g of(wk.games||[])){
+        const home=g.homeTeam?.abbrev,away=g.awayTeam?.abbrev;
+        if((home==='CAR'&&away==='VGK')||(home==='VGK'&&away==='CAR')){
+          return g.id;
+        }
+      }
+    }
+  }catch(e){}
+  return null;
+}
+
+async function loadRosters(gid){
+  try{
+    const r=await fetch(`${NHL_API}/gamecenter/${gid}/boxscore`);
+    const d=await r.json();
+    LIVE.homeTri=d.homeTeam?.abbrev||'CAR';
+    LIVE.awayTri=d.awayTeam?.abbrev||'VGK';
+    LIVE.homeName=d.homeTeam?.commonName?.default||LIVE.homeTri;
+    LIVE.awayName=d.awayTeam?.commonName?.default||LIVE.awayTri;
+    const home=d.playerByGameStats?.homeTeam||{};
+    const away=d.playerByGameStats?.awayTeam||{};
+    const parseTeam=(t)=>[...(t.forwards||[]),...(t.defense||[]),...(t.goalies||[])].map(p=>({
+      id:p.playerId,name:p.name?.default||'?',pos:p.position||'',num:p.sweaterNumber||''
+    }));
+    ROSTERS[LIVE.homeTri]=parseTeam(home);
+    ROSTERS[LIVE.awayTri]=parseTeam(away);
+    document.getElementById('sub').textContent=`🏒 ${LIVE.homeName} vs ${LIVE.awayName}`;
+  }catch(e){console.error('roster load',e);}
+}
+
+const PLAY_TO_EVT={
+  'goal':'goal',
+  'shot-on-goal':'shoton',
+  'missed-shot':'shotoff',
+  'blocked-shot':'block',
+  'hit':'hit',
+  'takeaway':'takeaway',
+  'giveaway':'giveaway',
+  'faceoff':null, // handled separately for win/loss
+  'penalty':'penalty',
+};
+
+async function doRefresh(){
+  if(!gameId){
+    gameId=await findGameId();
+    if(!gameId){
+      document.getElementById('rft').textContent='no game';
+      return;
+    }
+    await loadRosters(gameId);
+  }
+  const btn=document.getElementById('rfbtn');btn.textContent='↻ ...';btn.disabled=true;
+  try{
+    const [pbpR,boxR]=await Promise.all([
+      fetch(`${NHL_API}/gamecenter/${gameId}/play-by-play`),
+      fetch(`${NHL_API}/gamecenter/${gameId}/boxscore`),
+    ]);
+    if(pbpR.ok){
+      const pbp=await pbpR.json();
+      LIVE.score[LIVE.homeTri]=pbp.homeTeam?.score??LIVE.score[LIVE.homeTri];
+      LIVE.score[LIVE.awayTri]=pbp.awayTeam?.score??LIVE.score[LIVE.awayTri];
+      LIVE.period=pbp.periodDescriptor?.number||LIVE.period;
+      LIVE.clock=pbp.clock?.timeRemaining||'--:--';
+      LIVE.status=pbp.gameState||'live';
+
+      // Per-period scores
+      const byP={};
+      (pbp.summary?.scoring||[]).forEach(s=>{const p=s.periodDescriptor?.number;if(!p)return;if(!byP[p])byP[p]={home:0,away:0};});
+      // Cleaner: use linescore-like; if not present, derive
+      const plays=pbp.plays||[];
+      plays.forEach(pl=>{
+        if(pl.typeDescKey==='goal'){
+          const p=pl.periodDescriptor?.number||1;
+          if(!byP[p])byP[p]={home:0,away:0};
+          if(pl.details?.eventOwnerTeamId===pbp.homeTeam?.id)byP[p].home++;
+          else byP[p].away++;
+        }
+      });
+      LIVE.byP=byP;
+      renderSB();
+
+      // Process new plays
+      if(!S.apiSeen)S.apiSeen={};
+      let newOnes=0;
+      for(const pl of plays){
+        const key=`${pl.eventId||pl.sortOrder||''}-${pl.timeInPeriod}-${pl.typeDescKey}`;
+        if(S.apiSeen[key])continue;
+        S.apiSeen[key]=true;
+        newOnes++;
+
+        const teamId=pl.details?.eventOwnerTeamId;
+        const homeId=pbp.homeTeam?.id,awayId=pbp.awayTeam?.id;
+        const teamTri=teamId===homeId?LIVE.homeTri:teamId===awayId?LIVE.awayTri:null;
+        const oppTri=teamTri===LIVE.homeTri?LIVE.awayTri:LIVE.homeTri;
+        const timeLabel=`P${pl.periodDescriptor?.number||'?'} ${pl.timeInPeriod||''}`;
+
+        const t=pl.typeDescKey;
+        if(t==='goal'&&teamTri){
+          const scorer=findPlayerById(pl.details?.scoringPlayerId);
+          if(scorer)applyEvt(scorer.name,teamTri,'goal',timeLabel,true);
+          const a1=findPlayerById(pl.details?.assist1PlayerId);
+          if(a1)applyEvt(a1.name,teamTri,'assist1',timeLabel,true);
+          const a2=findPlayerById(pl.details?.assist2PlayerId);
+          if(a2)applyEvt(a2.name,teamTri,'assist2',timeLabel,true);
+          // on-ice for goal (use playersOnIce arrays if available)
+          const onForList=pl.details?.[teamTri===LIVE.homeTri?'homePlayersOnIce':'awayPlayersOnIce']||[];
+          onForList.forEach(pid=>{
+            const p=findPlayerById(pid);
+            if(p&&p.id!==pl.details?.scoringPlayerId&&p.id!==pl.details?.assist1PlayerId&&p.id!==pl.details?.assist2PlayerId){
+              applyEvt(p.name,teamTri,'onice_goal',timeLabel,true);
+            }
+          });
+          // on-ice against
+          const offList=pl.details?.[teamTri===LIVE.homeTri?'awayPlayersOnIce':'homePlayersOnIce']||[];
+          offList.forEach(pid=>{const p=findPlayerById(pid);if(p)applyEvt(p.name,oppTri,'onice_against',timeLabel,true);});
+        } else if(t==='shot-on-goal'&&teamTri){
+          const s=findPlayerById(pl.details?.shootingPlayerId);
+          if(s)applyEvt(s.name,teamTri,'shoton',timeLabel,true);
+          const g=findPlayerById(pl.details?.goalieInNetId);
+          if(g){applyEvt(g.name,oppTri,'save',timeLabel,true);}
+          // ON-ICE BONUSES — everyone on ice for shooting team gets +1
+          const onForList=pl.details?.[teamTri===LIVE.homeTri?'homePlayersOnIce':'awayPlayersOnIce']||[];
+          onForList.forEach(pid=>{
+            if(pid===pl.details?.shootingPlayerId)return;
+            const p=findPlayerById(pid);
+            if(p)applyEvt(p.name,teamTri,'onice_shot',timeLabel,true);
+          });
+          // Defenders on ice get on-ice save credit
+          const defList=pl.details?.[teamTri===LIVE.homeTri?'awayPlayersOnIce':'homePlayersOnIce']||[];
+          defList.forEach(pid=>{
+            if(pid===pl.details?.goalieInNetId)return;
+            const p=findPlayerById(pid);
+            if(p)applyEvt(p.name,oppTri,'onice_save',timeLabel,true);
+          });
+        } else if(t==='missed-shot'&&teamTri){
+          const s=findPlayerById(pl.details?.shootingPlayerId);
+          if(s)applyEvt(s.name,teamTri,'shotoff',timeLabel,true);
+        } else if(t==='blocked-shot'&&teamTri){
+          const s=findPlayerById(pl.details?.shootingPlayerId);
+          if(s)applyEvt(s.name,oppTri,'shotblocked',timeLabel,true);
+          const b=findPlayerById(pl.details?.blockingPlayerId);
+          if(b)applyEvt(b.name,teamTri,'block',timeLabel,true);
+        } else if(t==='hit'&&teamTri){
+          const h=findPlayerById(pl.details?.hittingPlayerId);
+          if(h)applyEvt(h.name,teamTri,'hit',timeLabel,true);
+          const hitee=findPlayerById(pl.details?.hitteePlayerId);
+          if(hitee){const ht=findTeamOf(hitee.id);if(ht)applyEvt(hitee.name,ht,'gothit',timeLabel,true);}
+          // On-ice bonuses for hitter's team
+          const onForList=pl.details?.[teamTri===LIVE.homeTri?'homePlayersOnIce':'awayPlayersOnIce']||[];
+          onForList.forEach(pid=>{
+            if(pid===pl.details?.hittingPlayerId)return;
+            const p=findPlayerById(pid);
+            if(p)applyEvt(p.name,teamTri,'onice_hit',timeLabel,true);
+          });
+        } else if(t==='takeaway'&&teamTri){
+          const p=findPlayerById(pl.details?.playerId);
+          if(p)applyEvt(p.name,teamTri,'takeaway',timeLabel,true);
+        } else if(t==='giveaway'&&teamTri){
+          const p=findPlayerById(pl.details?.playerId);
+          if(p)applyEvt(p.name,teamTri,'giveaway',timeLabel,true);
+        } else if(t==='faceoff'){
+          const winId=pl.details?.winningPlayerId;
+          const loseId=pl.details?.losingPlayerId;
+          const wp=findPlayerById(winId);const lp=findPlayerById(loseId);
+          if(wp){const wt=findTeamOf(wp.id);if(wt)applyEvt(wp.name,wt,'fow',timeLabel,true);}
+          if(lp){const lt=findTeamOf(lp.id);if(lt)applyEvt(lp.name,lt,'fol',timeLabel,true);}
+        } else if(t==='penalty'&&teamTri){
+          const p=findPlayerById(pl.details?.committedByPlayerId);
+          const mins=pl.details?.duration||2;
+          if(p)applyEvt(p.name,teamTri,mins>=5?'majorpen':'penalty',timeLabel,true);
+        }
+      }
+      // Track on-ice players (currently on the ice)
+      const cur=pbp.summary?.iceSurface||{};
+      // The API exposes who's on ice in different places; use the last play's onIce arrays as fallback
+      const lastPlay=plays[plays.length-1];
+      if(lastPlay?.details){
+        const homeOn=lastPlay.details.homePlayersOnIce||[];
+        const awayOn=lastPlay.details.awayPlayersOnIce||[];
+        onIce[LIVE.homeTri]=new Set(homeOn);
+        onIce[LIVE.awayTri]=new Set(awayOn);
+      }
+      // Award shift points (once per faceoff for currently on-ice players)
+      // Simpler: every refresh, give a tiny bonus to anyone picked who's currently on ice
+      // We do this via a refresh-tick stamp so we don't spam
+      const tick=Math.floor(Date.now()/15000); // every 15s
+      if(!S.shiftSeen)S.shiftSeen={};
+      [LIVE.homeTri,LIVE.awayTri].forEach(team=>{
+        onIce[team].forEach(pid=>{
+          const key=`${pid}-${tick}`;
+          if(S.shiftSeen[key])return;
+          S.shiftSeen[key]=true;
+          const p=findPlayerById(pid);
+          if(p)applyEvt(p.name,team,'onice_shift',LIVE.clock,true);
+        });
+      });
+
+      if(newOnes>0)await push();
+      renderFeed();renderLB();
+    }
+    if(boxR.ok){
+      const box=await boxR.json();
+      // Update player stat numbers on cards
+      const upd=(arr,team)=>arr.forEach(p=>{
+        const r=ROSTERS[team].find(x=>x.id===p.playerId);
+        if(r){
+          r.stats={
+            g:p.goals||0,a:p.assists||0,sh:p.shots||0,h:p.hits||0,
+            blk:p.blockedShots||0,toi:p.toi||'',ppg:p.powerPlayGoals||0,
+            sa:p.saves||0,ga:p.goalsAgainst||0,svpct:p.savePctg||0,
+          };
+        }
+      });
+      upd([...(box.playerByGameStats?.homeTeam?.forwards||[]),...(box.playerByGameStats?.homeTeam?.defense||[]),...(box.playerByGameStats?.homeTeam?.goalies||[])],LIVE.homeTri);
+      upd([...(box.playerByGameStats?.awayTeam?.forwards||[]),...(box.playerByGameStats?.awayTeam?.defense||[]),...(box.playerByGameStats?.awayTeam?.goalies||[])],LIVE.awayTri);
+      renderPlayers();
+    }
+    document.getElementById('rft').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    badge('ok');
+  }catch(e){console.error(e);badge('err');document.getElementById('rft').textContent='err';}
+  btn.textContent='↻ LIVE';btn.disabled=false;
+}
+// 20s auto refresh
+setInterval(()=>{if(S.started)doRefresh();},20000);
+
+function findPlayerById(id){
+  if(!id)return null;
+  for(const t of [LIVE.homeTri,LIVE.awayTri]){
+    const p=ROSTERS[t]?.find(p=>p.id===id);
+    if(p)return p;
+  }
+  return null;
+}
+function findTeamOf(id){
+  for(const t of [LIVE.homeTri,LIVE.awayTri]){
+    if(ROSTERS[t]?.find(p=>p.id===id))return t;
+  }
+  return null;
+}
+
+// ─── HUMANS ───
+function addHuman(n,c){
+  n=n||document.getElementById('ninp').value.trim();c=c||selColor;
+  if(!n||S.humans.find(h=>h.name.toLowerCase()===n.toLowerCase()))return;
+  S.humans.push({name:n,color:c});S.scores[n]=0;S.picks[n]=null;
+  document.getElementById('ninp').value='';renderSetup();
+}
+document.getElementById('ninp').addEventListener('keypress',e=>{if(e.key==='Enter')addHuman();});
+function removeH(n){S.humans=S.humans.filter(h=>h.name!==n);delete S.scores[n];delete S.picks[n];renderSetup();}
+function renderSetup(){
+  document.getElementById('htags').innerHTML=S.humans.map(h=>`<div class="htag" style="background:${ha(h.color,.15)};border-color:${ha(h.color,.6)};color:${h.color}">${h.name}<button onclick="removeH('${h.name}')">✕</button></div>`).join('');
+  document.getElementById('startbtn').style.display=S.humans.length>=1?'block':'none';
+}
+async function startGame(){
+  S.started=true;
+  if(myName)who=myName;
+  if(!who&&S.humans.length>0)who=S.humans[0].name;
+  document.getElementById('setup-sec').style.display='none';
+  document.getElementById('game-sec').style.display='block';
+  await push();render();await doRefresh();
+}
+function addMid(){
+  const n=document.getElementById('ninp2').value.trim();if(!n)return;
+  S.humans.push({name:n,color:selColor2});S.scores[n]=0;S.picks[n]=null;
+  document.getElementById('ninp2').value='';cm('add-mod');push();render();
+}
+
+// ─── PICKING ───
+function setWho(n){who=n;renderWho();renderPlayers();}
+function tapPlayer(pname,team){
+  if(!who){toast('TAP YOUR NAME FIRST','Select yourself above','');return;}
+  const p=allP().find(x=>x.name===pname);
+  document.getElementById('pick-t').textContent=pname;
+  document.getElementById('pick-s').innerHTML=`${team==='CAR'?'Carolina':'Vegas'} · ${p?.pos||''}${p?.num?' · #'+p.num:''}`;
+  document.getElementById('pick-l').innerHTML=S.humans.map(h=>{
+    const isA=h.name===who;const has=S.picks[h.name]?.player===pname;
+    return`<div class="pr" style="${isA?'border-color:'+ha(h.color,.6):''}">
+      <div class="prn" style="color:${h.color}">${h.name}</div>
+      <div class="prc">${S.picks[h.name]?'→ '+S.picks[h.name].player.split(' ').slice(-1)[0]:'no pick'}</div>
+      ${has?`<button class="prb di" onclick="doPick('${h.name}','${escape(pname)}','${team}',true)">DROP</button>`:`<button class="prb pi" onclick="doPick('${h.name}','${escape(pname)}','${team}',false)">PICK</button>`}
+    </div>`;
+  }).join('');
+  document.getElementById('pick-mod').style.display='block';
+}
+function doPick(hn,pname,team,drop){
+  cm('pick-mod');
+  if(drop){S.picks[hn]=null;push();render();toast('DROPPED',hn+' dropped '+pname,'');return;}
+  S.picks[hn]={player:pname,team,pickTime:Date.now()};
+  push();render();toast('PICKED',hn+' → '+pname,'');
+}
+
+// ─── EVENTS (manual + API both flow through here) ───
+function openEvtModal(pname,team){
+  pendingEvt={name:pname,team};
+  document.getElementById('evt-t').textContent=pname.split(' ').slice(-1)[0].toUpperCase();
+  document.getElementById('evt-s').innerHTML=`${team} · tap to log`;
+  document.getElementById('evt-g').innerHTML=Object.entries(EVT).map(([k,e])=>`<button class="eb" onclick="logEvt('${k}')"><span class="ep">${e.pts>0?'+':''}${e.pts}</span>${e.label}</button>`).join('');
+  document.getElementById('evt-mod').style.display='block';
+}
+function logEvt(k){if(!pendingEvt)return;const{name,team}=pendingEvt;cm('evt-mod');applyEvt(name,team,k,'manual',false);}
+
+function applyEvt(pname,team,k,timeLabel,fromAPI){
+  const e=EVT[k];if(!e)return;
+  if(!S.log)S.log={};
+  const now=Date.now();
+  let awarded=false;
+  S.humans.forEach(h=>{
+    const pk=S.picks[h.name];if(!pk||pk.player!==pname)return;
+    S.scores[h.name]=(S.scores[h.name]||0)+e.pts;
+    awarded=true;
+    const logKey='l'+now+Math.random();
+    S.log[logKey]={who:h.name,player:pname,evt:k,pts:e.pts,t:now,time:timeLabel,api:!!fromAPI,desc:`${e.label} — ${pname.split(' ').slice(-1)[0]}`};
+    // Big events get big toast
+    if(['goal','assist1','shutout','fight','fightwon','bigsave','onice_goal'].includes(k)&&e.pts>0){bigToast(h.name,`${e.label} — ${pname.split(' ').slice(-1)[0]}`,e.pts);}
+  });
+  if(!awarded&&fromAPI&&['goal','assist1','assist2'].includes(k)){
+    // Show in feed even if nobody picked
+    const logKey='g'+now+Math.random();
+    S.log[logKey]={who:null,player:pname,evt:k,pts:0,t:now,time:timeLabel,api:true,desc:`${e.label} — ${pname.split(' ').slice(-1)[0]}`};
+  }
+  if(!fromAPI)push();
+  // Don't full-rerender on each api event during the loop
+}
+
+// ─── RENDER ───
+function render(){renderSB();renderWho();renderPlayers();renderLB();renderFeed();renderOnIce();}
+function renderSB(){
+  document.getElementById('sc-car').textContent=LIVE.score.CAR||0;
+  document.getElementById('sc-vgk').textContent=LIVE.score.VGK||0;
+  document.getElementById('clk').textContent=LIVE.clock;
+  document.getElementById('qtr').textContent=LIVE.period?'P'+LIVE.period:'PRE';
+  // Per-period scores
+  const ks=Object.keys(LIVE.byP||{}).sort();
+  document.getElementById('tq-car').innerHTML=ks.map(k=>`<div class="qc">P${k}:${LIVE.byP[k][LIVE.homeTri==='CAR'?'home':'away']}</div>`).join('');
+  document.getElementById('tq-vgk').innerHTML=ks.map(k=>`<div class="qc">P${k}:${LIVE.byP[k][LIVE.awayTri==='VGK'?'away':'home']}</div>`).join('');
+}
+function renderOnIce(){
+  const ids=[...(onIce[LIVE.homeTri]||[]),...(onIce[LIVE.awayTri]||[])];
+  if(!ids.length){document.getElementById('oniceline').textContent='On ice now: tracking starts when game begins';return;}
+  const names=ids.map(id=>findPlayerById(id)?.name?.split(' ').slice(-1)[0]).filter(Boolean);
+  document.getElementById('oniceline').innerHTML=`<b style="color:var(--green);">⛸️ ON ICE:</b> ${names.join(' · ')}`;
+}
+function renderWho(){
+  document.getElementById('who').innerHTML=S.humans.map(h=>{
+    const a=h.name===who;
+    return`<button class="wchip" style="${a?`background:${h.color};border-color:${h.color};color:${dark(h.color)?'#fff':'#000'}`:`border-color:${ha(h.color,.6)};color:${h.color}`}" onclick="setWho('${h.name}')">${h.name}${h.name===myName?' ✓':''}</button>`;
+  }).join('');
+}
+function renderPlayers(){
+  const el=document.getElementById('psec');if(!el)return;let html='';
+  [[LIVE.homeTri,LIVE.homeName],[LIVE.awayTri,LIVE.awayName]].forEach(([tri,name])=>{
+    if(!ROSTERS[tri]?.length)return;
+    const cls=tri.toLowerCase();
+    html+=`<div class="tsec"><div class="thdr"><div class="tbadge ${cls}">${tri}</div><div style="font-size:.66rem;color:var(--muted);">${name}</div></div><div class="pgrid">`;
+    ROSTERS[tri].forEach(p=>{
+      const owners=S.humans.filter(h=>S.picks[h.name]?.player===p.name);
+      const meh=S.humans.find(h=>h.name===who);
+      const isMe=who&&S.picks[who]?.player===p.name;
+      const isOn=onIce[tri]?.has(p.id);
+      let stripe='';
+      if(owners.length===1)stripe=`background:${owners[0].color}`;
+      else if(owners.length>1)stripe=`background:linear-gradient(90deg,${owners.map(o=>o.color).join(',')})`;
+      const border=isMe&&meh?`border-color:${meh.color}`:owners.length?`border-color:${ha(owners[0].color,.5)}`:'';
+      const st=p.stats||{};
+      const parts=[];
+      if(p.pos==='G'){
+        if(st.sa!==undefined)parts.push(st.sa+'sv');
+        if(st.ga!==undefined)parts.push(st.ga+'ga');
+      } else {
+        if(st.g)parts.push(st.g+'g');
+        if(st.a)parts.push(st.a+'a');
+        if(st.sh)parts.push(st.sh+'sh');
+        if(st.h)parts.push(st.h+'h');
+        if(st.blk)parts.push(st.blk+'blk');
+      }
+      const mainStat=p.pos==='G'?(st.sa||0):((st.g||0)+(st.a||0));
+      html+=`<div class="pc ${isOn?'onice':''}" style="${border}" onclick="tapPlayer('${escape(p.name)}','${tri}')" oncontextmenu="event.preventDefault();openEvtModal('${escape(p.name)}','${tri}')" ontouchstart="startLong('${escape(p.name)}','${tri}')" ontouchend="cancelLong()">
+        <div class="stripe" style="${stripe}"></div>
+        ${isOn?'<div class="onicebadge">ON</div>':''}
+        <div class="pn">${p.name}</div><div class="pp">${p.pos}${p.num?' · #'+p.num:''}</div>
+        <div class="pgp ${cls}">${mainStat}</div>
+        <div class="pst">${parts.length?parts.join(' · '):'—'}</div>
+        ${owners.length?`<div class="otags">${owners.map(o=>`<span class="otag" style="background:${ha(o.color,.15)};border-color:${ha(o.color,.5)};color:${o.color}">${o.name}</span>`).join('')}</div>`:`<div class="phint">tap to pick · hold to log</div>`}
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+  if(!html)html='<div class="nof">Waiting for rosters from NHL API…</div>';
+  el.innerHTML=html;
+}
+function escape(s){return (s||'').replace(/'/g,"\\'");}
+function renderLB(){
+  const el=document.getElementById('lbg');if(!el)return;
+  const sorted=[...S.humans].sort((a,b)=>(S.scores[b.name]||0)-(S.scores[a.name]||0));
+  el.innerHTML=sorted.map((h,i)=>{
+    const pk=S.picks[h.name];
+    return`<div class="lbc"><div class="lbs" style="background:${h.color}"></div>
+      <div class="lbrk ${i===0?'top':''}">${['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'][i]||'#'+(i+1)}</div>
+      <div class="lbhn" style="color:${h.color}">${h.name}</div>
+      <div class="lbsc">${(S.scores[h.name]||0).toFixed(1)}</div>
+      <div class="lbpk">${pk?'→ '+pk.player.split(' ').slice(-1)[0]:'no pick'}</div>
+    </div>`;
+  }).join('');
+}
+function renderFeed(){
+  const el=document.getElementById('feed');if(!el)return;
+  const entries=Object.values(S.log||{}).sort((a,b)=>b.t-a.t).slice(0,40);
+  if(!entries.length){el.innerHTML='<div class="nof">Events appear here automatically as they happen</div>';return;}
+  el.innerHTML=entries.map(e=>{
+    const h=S.humans.find(h=>h.name===e.who);const c=h?h.color:'#666';
+    const pc=e.pts>=0?'var(--green)':'var(--red)';
+    return`<div class="fe" style="border-left-color:${c}">${e.time?`<span class="fet">${e.time}${e.api?' 🔴':''}</span>`:''}<span class="few" style="color:${c}">${e.who||'API'}</span><span class="fed">${e.desc}</span>${e.pts!==0?`<span class="fep" style="color:${pc}">${e.pts>0?'+':''}${e.pts}</span>`:''}</div>`;
+  }).join('');
+}
+
+// ─── HELPERS ───
+function allP(){return[...(ROSTERS[LIVE.homeTri]||[]),...(ROSTERS[LIVE.awayTri]||[])];}
+function cm(id){document.getElementById(id).style.display='none';}
+function openRules(){document.getElementById('rules-mod').style.display='block';}
+function openAdd(){rcp('cpick2',selColor2);document.getElementById('add-mod').style.display='block';}
+function confirmReset(){if(confirm('Reset picks/scores?')){S={...S,picks:{},scores:{},log:{},apiSeen:{},shiftSeen:{}};push();render();}}
+function ha(hex,a){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}catch(e){return hex;}}
+function dark(hex){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return(r*299+g*587+b*114)/1000<128;}catch(e){return false;}}
+function rcp(id,sel){document.getElementById(id).innerHTML=PAL.map(c=>`<div class="copt${sel===c?' sel':''}" style="background:${c}" onclick="pickColor('${c}','${id}')"></div>`).join('');}
+function pickColor(c,id){if(id==='cpick')selColor=c;else selColor2=c;rcp(id,c);localStorage.setItem('pyp_mycolor',c);}
+function toast(t,b,x){const w=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';el.innerHTML=`<div class="ttt">${t}</div><div class="ttb">${b}</div>${x?`<div class="ttp" style="color:var(--yellow)">${x}</div>`:''}`;w.appendChild(el);setTimeout(()=>el.remove(),3700);}
+function bigToast(hn,desc,pts){const h=S.humans.find(h=>h.name===hn);const c=h?h.color:'#fff';const pc=pts>0?'var(--green)':'var(--red)';const w=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';el.style.borderColor=c;el.innerHTML=`<div class="ttt" style="color:${c}">${hn}</div><div class="ttb">${desc}</div><div class="ttp" style="color:${pc}">${pts>0?'+':''}${pts} pts</div>`;w.appendChild(el);setTimeout(()=>el.remove(),4500);}
+let longTimer=null;
+function startLong(pname,team){longTimer=setTimeout(()=>openEvtModal(pname,team),500);}
+function cancelLong(){clearTimeout(longTimer);}
+
+// ─── BOOT ───
+rcp('cpick',selColor);
+(async function boot(){
+  badge('spin');
+  try{const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});if(r.ok){const d=await r.json();if(d.record?.humans!==undefined)S=d.record;}}catch(e){}
+  if(!myName){const n=prompt('Your name?');if(n?.trim()){myName=n.trim();localStorage.setItem('pyp_myname',myName);who=myName;}}
+  if(myName){const f=S.humans?.find(h=>h.name.toLowerCase()===myName.toLowerCase());if(f){who=f.name;selColor=f.color;}}
+  if(S.started){
+    document.getElementById('setup-sec').style.display='none';
+    document.getElementById('game-sec').style.display='block';
+    render();
+    doRefresh();
+  } else {
+    renderSetup();
+    // Pre-load rosters anyway
+    doRefresh();
+  }
+})();
+</script>
+</body>
+</html>
