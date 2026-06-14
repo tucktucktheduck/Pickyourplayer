@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PICK YOUR PLAYER 🏀 SQUAD</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0c;--surface:#111114;--surface2:#17171b;--border:#222226;--text:#f0f0f0;--muted:#555;--muted2:#333;--home:#FFD600;--away:#00BCD4;--green:#00E676;--red:#FF3B3B;--yellow:#FFD600;--blue:#2979FF;--purple:#D500F9;--orange:#FF6D00;--teal:#00BCD4;--pink:#FF4081;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;min-height:100vh;font-size:13px;}
+.app{max-width:900px;margin:0 auto;padding:12px 12px 90px;}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 0 12px;border-bottom:1px solid var(--border);margin-bottom:12px;gap:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,5vw,2.6rem);letter-spacing:4px;line-height:1;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:.58rem;letter-spacing:3px;color:var(--muted);margin-top:2px;}
+.hdr-right{display:flex;gap:5px;align-items:center;}
+.ibtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+.syncbadge{font-size:.58rem;letter-spacing:1px;padding:2px 7px;border-radius:10px;border:1px solid;}
+.syncbadge.ok{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.08);}
+.syncbadge.err{color:var(--red);border-color:var(--red);background:rgba(255,59,59,.08);}
+.syncbadge.spin{color:var(--yellow);border-color:var(--yellow);background:rgba(255,214,0,.08);}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;align-items:center;}
+.tm{text-align:center;}
+.tn{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;}
+.tn.h{color:var(--home);}.tn.a{color:var(--away);}
+.ts{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,9vw,4rem);line-height:1;}
+.ts.h{color:var(--home);}.ts.a{color:var(--away);}
+.tq{display:flex;gap:3px;justify-content:center;margin-top:3px;flex-wrap:wrap;}
+.qc{font-size:.58rem;padding:1px 4px;background:var(--surface2);border-radius:3px;color:var(--muted);}
+.mid{text-align:center;}.mc{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:var(--yellow);}
+.mp{font-size:.6rem;color:var(--muted);letter-spacing:2px;}
+.live{display:inline-flex;align-items:center;gap:3px;background:rgba(255,59,59,.12);border:1px solid rgba(255,59,59,.3);color:var(--red);font-size:.58rem;letter-spacing:2px;padding:2px 6px;border-radius:20px;margin-top:3px;}
+.dot{width:5px;height:5px;background:var(--red);border-radius:50%;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.sl{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.div{height:1px;background:var(--border);margin:12px 0;}
+.btn{background:var(--yellow);color:#000;border:none;padding:7px 14px;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:2px;border-radius:5px;cursor:pointer;}
+.btn.gh{background:transparent;color:var(--yellow);border:1px solid var(--yellow);}
+.btn.full{width:100%;font-size:1.05rem;padding:11px;}
+.btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.setup{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;}
+.srow{display:flex;gap:6px;margin-bottom:8px;align-items:center;}
+.sinp{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:'DM Mono',monospace;font-size:.8rem;border-radius:5px;min-width:0;}
+.cpick{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.copt{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+.copt.sel{border-color:#fff;transform:scale(1.15);}
+
+.youcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.youdot{width:14px;height:14px;border-radius:50%;}
+.youname{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.5px;flex:1;}
+.youscore{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--green);}
+
+.squad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;}
+.squadslot{background:var(--surface2);border:2px dashed var(--border);border-radius:7px;padding:8px;text-align:center;min-height:80px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;}
+.squadslot.filled{border-style:solid;border-color:var(--yellow);}
+.squadslot.locked{border-color:var(--green);background:rgba(0,230,118,.06);}
+.squadslot.off{opacity:.5;border-color:var(--red);}
+.squadslot .ssn{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.78rem;line-height:1.1;margin-bottom:2px;}
+.squadslot .ssr{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;line-height:1;}
+.squadslot .sslbl{font-size:.55rem;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+.squadslot .ssgo{font-size:.58rem;color:var(--green);margin-top:2px;font-weight:700;}
+.squadslot .ssoff{font-size:.58rem;color:var(--red);margin-top:2px;font-weight:700;}
+
+.tsec{margin-bottom:14px;}
+.thdr{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.tbadge{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:3px;padding:2px 9px;border-radius:4px;}
+.tbadge.h{background:rgba(255,214,0,.1);color:var(--home);border:1px solid rgba(255,214,0,.3);}
+.tbadge.a{background:rgba(0,188,212,.1);color:var(--away);border:1px solid rgba(0,188,212,.3);}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 10px;cursor:pointer;position:relative;overflow:hidden;}
+.pc.oncourt{box-shadow:0 0 0 1px var(--green);}
+.pc .stripe{position:absolute;top:0;left:0;right:0;height:3px;}
+.pc .pn{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;letter-spacing:.5px;line-height:1.1;margin-bottom:1px;}
+.pc .pp{font-size:.58rem;color:var(--muted);letter-spacing:2px;margin-bottom:5px;}
+.pc .pgp{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1;}
+.pc .pgp.h{color:var(--home);}.pc .pgp.a{color:var(--away);}
+.pc .pst{font-size:.58rem;color:var(--muted);}
+.pc .ocbadge{position:absolute;top:5px;right:6px;background:var(--green);color:#000;font-size:.5rem;padding:1px 4px;border-radius:3px;font-weight:800;}
+.otags{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px;}
+.otag{font-size:.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;padding:1px 5px;border-radius:3px;border:1px solid transparent;}
+.phint{font-size:.6rem;color:var(--muted2);font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px;margin-top:4px;}
+.lbg{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:6px;margin-bottom:12px;}
+.lbc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:9px 10px;position:relative;overflow:hidden;}
+.lbc .lbs{position:absolute;top:0;left:0;right:0;height:3px;}
+.lbc.me{box-shadow:0 0 0 1px var(--yellow);}
+.lbhn{font-family:'Barlow Condensed',sans-serif;font-size:.92rem;font-weight:800;letter-spacing:1px;margin-bottom:2px;}
+.lbsc{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:1;color:var(--green);}
+.lbpk{font-size:.58rem;color:var(--muted);margin-top:2px;line-height:1.3;}
+.lbrk{position:absolute;top:7px;right:8px;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:var(--muted2);}
+.lbrk.top{color:var(--yellow);}
+.feed{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;margin-bottom:12px;}
+.fe{display:flex;align-items:baseline;gap:5px;font-size:.67rem;padding:5px 8px;border-radius:5px;background:var(--surface);border-left:2px solid var(--border);}
+.few{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.5px;}
+.fed{flex:1;color:var(--muted);}
+.fep{font-family:'Bebas Neue',sans-serif;font-size:.85rem;margin-left:auto;}
+.fet{font-size:.55rem;color:var(--muted2);margin-right:4px;}
+.nof{font-size:.7rem;color:var(--muted);text-align:center;padding:14px 0;}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;width:100%;max-width:380px;max-height:92vh;overflow-y:auto;position:relative;}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:3px;margin-bottom:3px;}
+.ms{font-size:.67rem;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.mc2{position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;}
+.eb{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 7px;border-radius:6px;cursor:pointer;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;}
+.ep{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;display:block;margin-bottom:2px;}
+.who-list{display:flex;flex-direction:column;gap:5px;}
+.who-item{display:flex;align-items:center;gap:8px;padding:9px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;cursor:pointer;}
+.who-item:hover{border-color:var(--yellow);}
+.who-item .dot{width:14px;height:14px;border-radius:50%;}
+.who-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;flex:1;}
+#toasts{position:fixed;bottom:66px;right:12px;z-index:999;display:flex;flex-direction:column;gap:5px;max-width:260px;pointer-events:none;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 11px;animation:ti .25s ease,to .3s ease 3.3s forwards;}
+.ttt{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:.8rem;letter-spacing:1px;margin-bottom:1px;}
+.ttb{font-size:.65rem;color:var(--muted);}
+.ttp{font-family:'Bebas Neue',sans-serif;font-size:1rem;margin-top:2px;}
+@keyframes ti{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+@keyframes to{from{opacity:1}to{opacity:0;transform:translateX(28px)}}
+.bb{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:7px 12px;gap:8px;z-index:100;}
+.rft{font-size:.58rem;color:var(--muted);}
+.rst{font-size:.6rem;color:var(--muted2);background:none;border:none;cursor:pointer;text-decoration:underline;}
+.tablock{background:var(--surface);border:1px solid var(--border);border-radius:6px;display:flex;padding:3px;margin-bottom:11px;}
+.tabb{flex:1;background:none;border:none;color:var(--muted);padding:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:1.5px;cursor:pointer;border-radius:4px;}
+.tabb.active{background:var(--surface2);color:var(--yellow);}
+</style>
+</head>
+<body>
+<div id="toasts"></div>
+<div class="app">
+<div class="hdr">
+  <div><div class="logo">PICK YOUR PLAYER</div><div class="logo-sub" id="sub">🏀 SQUAD MODE · LIVE NBA</div></div>
+  <div class="hdr-right"><span class="syncbadge spin" id="syncbadge">SYNC</span><button class="ibtn" onclick="openRules()">?</button></div>
+</div>
+
+<div class="sb">
+  <div class="tm"><div class="tn h" id="tn-h">HOME</div><div class="ts h" id="sc-h">0</div><div class="tq" id="tq-h"></div></div>
+  <div class="mid"><div class="mc" id="clk">--</div><div class="mp" id="qtr">--</div><div class="live"><span class="dot"></span>LIVE</div></div>
+  <div class="tm"><div class="tn a" id="tn-a">AWAY</div><div class="ts a" id="sc-a">0</div><div class="tq" id="tq-a"></div></div>
+</div>
+
+<!-- WHO ARE YOU (login lock) -->
+<div id="login-sec" style="display:none;">
+  <div class="sl">Welcome — who are you?</div>
+  <div class="setup">
+    <div class="ms" id="login-explain">Pick yourself from the list, or add yourself.</div>
+    <div class="who-list" id="who-list"></div>
+    <div class="div"></div>
+    <div class="sl" style="margin-bottom:5px;">New player? Pick your color & name:</div>
+    <div class="cpick" id="cpick"></div>
+    <div class="srow"><input class="sinp" id="ninp" placeholder="Your name" maxlength="18"/><button class="btn" onclick="addMe()">JOIN</button></div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game-sec" style="display:none;">
+  <div class="youcard">
+    <div class="youdot" id="you-dot"></div>
+    <div class="youname" id="you-name">—</div>
+    <div class="youscore" id="you-score">0</div>
+  </div>
+
+  <div class="sl">Your Squad (3 players · they auto-score when on court)</div>
+  <div class="squad" id="squad"></div>
+  <div style="font-size:.62rem;color:var(--muted);margin-bottom:11px;line-height:1.5;">
+    🟢 = player is on the court right now (earning points) · ⚠️ = subbed out (no points until they're back) · Tap a slot to change.
+  </div>
+
+  <div class="div"></div>
+
+  <div class="sl">Leaderboard</div>
+  <div class="lbg" id="lbg"></div>
+
+  <div class="div"></div>
+
+  <div class="tablock">
+    <button class="tabb active" id="tab-h" onclick="setTab('h')">HOME</button>
+    <button class="tabb" id="tab-a" onclick="setTab('a')">AWAY</button>
+  </div>
+  <div class="sl" id="poolhdr">Player Pool</div>
+  <div id="psec"></div>
+
+  <div class="div"></div>
+  <div class="sl">Event Feed (live)</div>
+  <div class="feed" id="feed"><div class="nof">Events appear here as the API logs them</div></div>
+
+  <div class="div"></div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <button class="btn gh" onclick="switchUser()">switch user</button>
+    <button class="rst" onclick="confirmReset()">reset game</button>
+  </div>
+</div>
+</div>
+
+<div class="bb">
+  <div style="display:flex;align-items:center;gap:6px;">
+    <button class="btn gh" onclick="doRefresh()" id="rfbtn" style="font-size:.76rem;padding:4px 11px;">↻ LIVE</button>
+    <span class="rft" id="rft">--</span>
+  </div>
+  <span style="font-size:.56rem;color:var(--muted);">cdn.nba.com</span>
+</div>
+
+<!-- RULES -->
+<div id="rules-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('rules-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('rules-mod')">✕</button>
+  <div class="mt" style="background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">SQUAD RULES</div>
+  <div class="ms">Pick a squad of 3 players. They only earn points while they're on the court. When a sub happens, they pause — no panic-switching needed. Just vibe & check leaderboard.</div>
+  <div style="font-size:.7rem;color:var(--muted);line-height:1.7;">
+🏀 <b>SCORING (per event):</b><br>
+GOAL +5 · 3PT +4 · 2PT +3 · DUNK +4 · AND-1 +3 · FASTBREAK +2 · FT +1<br>
+ASSIST +2 · PASS +1 · DRAW FOUL +1<br>
+STEAL +3 · BLOCK +3 · OREB +2 · DREB +1 · CHARGE +2<br>
+TO −1<br>
+<br>
+🟢 <b>WHILE ON COURT BONUS:</b> Each squad spot earns +0.5/min for being on the floor.
+  </div>
+  <div style="margin-top:12px;"><button class="btn full" onclick="cm('rules-mod')">GOT IT</button></div>
+</div></div></div>
+
+<!-- PICK SQUAD SLOT MODAL -->
+<div id="pick-mod" style="display:none;"><div class="mbg" onclick="if(event.target===this)cm('pick-mod')"><div class="modal">
+  <button class="mc2" onclick="cm('pick-mod')">✕</button>
+  <div class="mt" id="pick-t">PICK PLAYER</div><div class="ms" id="pick-s">Squad slot · pick someone</div>
+  <div class="tablock">
+    <button class="tabb active" id="pmtab-h" onclick="setPickTab('h')">HOME</button>
+    <button class="tabb" id="pmtab-a" onclick="setPickTab('a')">AWAY</button>
+  </div>
+  <div id="pick-grid" style="max-height:60vh;overflow-y:auto;"></div>
+</div></div></div>
+
+<script>
+// ─── CONFIG ───
+const NBA_API='/api/nba?path=';  // Vercel proxy
+const BIN_ID='6a1b8bb2ddf5aa59f77a3169';
+const BIN_KEY='$2a$10$S.z7u7MGOm3tZoh9sLbH8OvXa2cJtxgwQiiv4HO9SMC78vZ40hO4W';
+const BIN_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const PAL=['#FFD600','#00E676','#2979FF','#FF3B3B','#D500F9','#FF6D00','#00BCD4','#8BC34A','#FF5722','#9C27B0','#03A9F4','#FFC107','#E91E63','#4CAF50','#FF9800'];
+
+// SCORING — chaos
+const EVT={
+  'goal':     {pts:5, label:'Goal'},
+  '3pt':      {pts:4, label:'3-pointer'},
+  '2pt':      {pts:3, label:'2-pointer'},
+  'dunk':     {pts:4, label:'Dunk'},
+  'and1':     {pts:3, label:'And-1'},
+  'fastbreak':{pts:2, label:'Fastbreak'},
+  'ft':       {pts:1, label:'Free throw'},
+  'ast':      {pts:2, label:'Assist'},
+  'pass':     {pts:1, label:'Pass'},
+  'stl':      {pts:3, label:'Steal'},
+  'blk':      {pts:3, label:'Block'},
+  'oreb':     {pts:2, label:'Off rebound'},
+  'dreb':     {pts:1, label:'Def rebound'},
+  'drawfoul': {pts:1, label:'Drew foul'},
+  'charge':   {pts:2, label:'Charge'},
+  'to':       {pts:-1,label:'Turnover'},
+  'oncourt_min':{pts:0.5,label:'On-court minute'},
+};
+
+// API event → our scoring map
+function mapApiAction(a){
+  const t=a.actionType, sub=a.subType||'';
+  if(t==='2pt'){
+    if(sub==='DUNK')return ['dunk'];
+    if(a.shotResult==='Made'){
+      const evts=['2pt'];
+      if(a.qualifiers?.includes('fastbreak'))evts.push('fastbreak');
+      if(a.qualifiers?.includes('and1'))evts.push('and1');
+      return evts;
+    }
+    return [];
+  }
+  if(t==='3pt'&&a.shotResult==='Made')return ['3pt'];
+  if(t==='freethrow'&&a.shotResult==='Made')return ['ft'];
+  if(t==='rebound'){
+    if(sub==='offensive')return ['oreb'];
+    return ['dreb'];
+  }
+  if(t==='steal')return ['stl'];
+  if(t==='block')return ['blk'];
+  if(t==='turnover')return ['to'];
+  if(t==='foul'&&sub==='offensive')return [];  // it's a charge for the defender, handle separately if needed
+  return [];
+}
+
+// ─── STATE ───
+let S={gameId:null,started:false,humans:[],squads:{},scores:{},log:{},apiSeen:{},minuteSeen:{},version:'squad-v1'};
+let LIVE={score:{h:0,a:0},clock:'--',period:0,status:'pre',byP:{},homeTri:'',awayTri:'',homeName:'',awayName:'',homeId:null,awayId:null};
+let ROSTERS={h:[],a:[]};  // arrays of {playerId, name, pos, num, oncourt, stats}
+let myName=localStorage.getItem('pyp_myname')||null;
+let selColor=localStorage.getItem('pyp_mycolor')||PAL[0];
+let pickingSlot=null;
+let pickTab='h';
+let viewTab='h';
+let isSyncing=false,pendingSync=false;
+
+function badge(s){const el=document.getElementById('syncbadge');if(s==='ok'){el.textContent='LIVE ✓';el.className='syncbadge ok';}else if(s==='err'){el.textContent='OFFLINE';el.className='syncbadge err';}else{el.textContent='SYNC...';el.className='syncbadge spin';}}
+
+async function push(){
+  if(isSyncing){pendingSync=true;return;}
+  isSyncing=true;badge('spin');
+  try{const r=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY,'X-Bin-Versioning':'false'},body:JSON.stringify(S)});badge(r.ok?'ok':'err');}catch(e){badge('err');}
+  isSyncing=false;
+  if(pendingSync){pendingSync=false;push();}
+}
+async function pull(){
+  try{
+    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
+    if(!r.ok)return;
+    const d=await r.json();
+    if(!d.record||d.record.version!=='squad-v1')return;
+    S=d.record;
+    if(!S.squads)S.squads={};
+    if(!S.scores)S.scores={};
+    if(!S.log)S.log={};
+    if(!S.apiSeen)S.apiSeen={};
+    if(!S.minuteSeen)S.minuteSeen={};
+    renderLB();renderSquad();renderFeed();renderYou();
+    badge('ok');
+  }catch(e){badge('err');}
+}
+setInterval(()=>{if(S.started)pull();},5000);
+
+// ─── NBA API ───
+async function findGame(){
+  try{
+    const r=await fetch(NBA_API+'/scoreboard/todaysScoreboard_00.json');
+    const d=await r.json();
+    const games=d.scoreboard?.games||[];
+    // Find a live one first, then upcoming
+    let g=games.find(x=>x.gameStatus===2)||games.find(x=>x.gameStatus===1)||games[0];
+    if(!g)return null;
+    return g;
+  }catch(e){return null;}
+}
+
+async function loadGame(){
+  if(!S.gameId){
+    const g=await findGame();
+    if(!g){toast('NO GAME','Nothing live on NBA today','');return;}
+    S.gameId=g.gameId;
+    LIVE.homeTri=g.homeTeam?.teamTricode||'H';
+    LIVE.awayTri=g.awayTeam?.teamTricode||'A';
+    LIVE.homeName=g.homeTeam?.teamName||'Home';
+    LIVE.awayName=g.awayTeam?.teamName||'Away';
+    LIVE.homeId=g.homeTeam?.teamId;
+    LIVE.awayId=g.awayTeam?.teamId;
+  }
+  await doRefresh();
+}
+
+async function doRefresh(){
+  if(!S.gameId){await loadGame();return;}
+  const btn=document.getElementById('rfbtn');btn.textContent='↻ ...';btn.disabled=true;
+  try{
+    const [boxR,pbpR]=await Promise.all([
+      fetch(NBA_API+`/boxscore/boxscore_${S.gameId}.json`),
+      fetch(NBA_API+`/playbyplay/playbyplay_${S.gameId}.json`),
+    ]);
+    if(boxR.ok){
+      const bd=await boxR.json();
+      const game=bd.game||bd;
+      LIVE.homeTri=game.homeTeam?.teamTricode||LIVE.homeTri;
+      LIVE.awayTri=game.awayTeam?.teamTricode||LIVE.awayTri;
+      LIVE.homeName=game.homeTeam?.teamName||LIVE.homeName;
+      LIVE.awayName=game.awayTeam?.teamName||LIVE.awayName;
+      LIVE.homeId=game.homeTeam?.teamId||LIVE.homeId;
+      LIVE.awayId=game.awayTeam?.teamId||LIVE.awayId;
+      LIVE.score.h=game.homeTeam?.score||0;
+      LIVE.score.a=game.awayTeam?.score||0;
+      LIVE.period=game.period||0;
+      LIVE.clock=parseClock(game.gameClock)||'--';
+      LIVE.status=game.gameStatus===2?'live':game.gameStatus===3?'final':'pre';
+      // Per-period
+      const byP={};
+      (game.homeTeam?.periods||[]).forEach(p=>{if(!byP[p.period])byP[p.period]={h:0,a:0};byP[p.period].h=p.score||0;});
+      (game.awayTeam?.periods||[]).forEach(p=>{if(!byP[p.period])byP[p.period]={h:0,a:0};byP[p.period].a=p.score||0;});
+      LIVE.byP=byP;
+      // Rosters with on-court status
+      const parsePlayers=(players)=>(players||[]).map(p=>({
+        playerId:p.personId,
+        name:p.name||p.nameI||`${p.firstName||''} ${p.familyName||''}`.trim(),
+        pos:p.position||p.starter?'S':'',
+        num:p.jerseyNum||'',
+        oncourt:p.oncourt==='1'||p.oncourt===true||p.onCourt===true,
+        starter:p.starter==='1'||p.starter===true,
+        stats:p.statistics||{},
+      }));
+      ROSTERS.h=parsePlayers(game.homeTeam?.players);
+      ROSTERS.a=parsePlayers(game.awayTeam?.players);
+      renderSB();
+    }
+    // Process play-by-play for new events
+    if(pbpR.ok){
+      const pd=await pbpR.json();
+      const actions=pd.game?.actions||[];
+      if(!S.apiSeen)S.apiSeen={};
+      let newOnes=0;
+      for(const a of actions){
+        const key=`a${a.actionNumber||a.eventId||''}-${a.clock||''}-${a.period||''}`;
+        if(S.apiSeen[key])continue;
+        S.apiSeen[key]=true;
+        newOnes++;
+        const evts=mapApiAction(a);
+        if(!evts.length)continue;
+        const teamKey=a.teamId===LIVE.homeId?'h':a.teamId===LIVE.awayId?'a':null;
+        if(!teamKey||!a.personId)continue;
+        const player=findPlayerById(a.personId);
+        if(!player)continue;
+        const timeLabel=`Q${a.period||'?'} ${parseClock(a.clock)||''}`;
+        for(const e of evts){
+          applyEvt(player.playerId,player.name,teamKey,e,timeLabel,true);
+        }
+        // Assist
+        if(a.assistPersonId){
+          const asst=findPlayerById(a.assistPersonId);
+          if(asst)applyEvt(asst.playerId,asst.name,teamKey,'ast',timeLabel,true);
+        }
+        // Block credited to a defender
+        if(a.blockPersonId){
+          const blk=findPlayerById(a.blockPersonId);
+          if(blk){const ot=teamKey==='h'?'a':'h';applyEvt(blk.playerId,blk.name,ot,'blk',timeLabel,true);}
+        }
+        // Steal
+        if(a.stealPersonId){
+          const stl=findPlayerById(a.stealPersonId);
+          if(stl){const ot=teamKey==='h'?'a':'h';applyEvt(stl.playerId,stl.name,ot,'stl',timeLabel,true);}
+        }
+      }
+      if(newOnes>0)await push();
+    }
+    // ON-COURT BONUS — every minute, give +0.5 to each squad slot whose player is on the court
+    const minuteKey=`${LIVE.period}-${LIVE.clock?.split(':')[0]||'0'}`;
+    if(!S.minuteSeen)S.minuteSeen={};
+    if(LIVE.status==='live'&&!S.minuteSeen[minuteKey]){
+      S.minuteSeen[minuteKey]=true;
+      // Award to each human's squad
+      Object.entries(S.squads||{}).forEach(([hname,sq])=>{
+        (sq||[]).forEach(slot=>{
+          if(!slot||!slot.playerId)return;
+          const p=findPlayerById(slot.playerId);
+          if(p?.oncourt){
+            S.scores[hname]=(S.scores[hname]||0)+EVT.oncourt_min.pts;
+          }
+        });
+      });
+      await push();
+    }
+    renderAll();
+    document.getElementById('rft').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    badge('ok');
+  }catch(e){badge('err');document.getElementById('rft').textContent='err';console.error(e);}
+  btn.textContent='↻ LIVE';btn.disabled=false;
+}
+setInterval(()=>{if(S.started&&LIVE.status==='live')doRefresh();},30000);
+
+function parseClock(c){
+  if(!c)return '';
+  // PT11M59.00S → 11:59
+  const m=c.match(/PT(\d+)M([\d.]+)S/);
+  if(!m)return c;
+  const min=m[1];const sec=Math.floor(parseFloat(m[2]));
+  return `${min}:${String(sec).padStart(2,'0')}`;
+}
+function findPlayerById(id){
+  if(!id)return null;
+  return ROSTERS.h.find(p=>p.playerId==id)||ROSTERS.a.find(p=>p.playerId==id);
+}
+
+// ─── EVENTS ───
+function applyEvt(playerId,playerName,team,k,timeLabel,fromAPI){
+  const e=EVT[k];if(!e)return;
+  if(!S.log)S.log={};
+  const now=Date.now();
+  let awarded=false;
+  // For each human, check if this player is in their squad
+  Object.entries(S.squads||{}).forEach(([hname,sq])=>{
+    if(!sq)return;
+    const has=sq.find(slot=>slot?.playerId==playerId);
+    if(!has)return;
+    S.scores[hname]=(S.scores[hname]||0)+e.pts;
+    awarded=true;
+    const lk='l'+now+Math.random();
+    S.log[lk]={who:hname,player:playerName,evt:k,pts:e.pts,t:now,time:timeLabel,api:!!fromAPI,desc:`${e.label} — ${playerName.split(' ').slice(-1)[0]}`};
+    if(['goal','3pt','2pt','dunk'].includes(k))bigToast(hname,`${e.label} — ${playerName.split(' ').slice(-1)[0]}`,e.pts);
+  });
+  if(!awarded&&fromAPI&&['goal','3pt','2pt','dunk','and1'].includes(k)){
+    const lk='g'+now+Math.random();
+    S.log[lk]={who:null,player:playerName,evt:k,pts:0,t:now,time:timeLabel,api:true,desc:`${e.label} — ${playerName.split(' ').slice(-1)[0]}`};
+  }
+}
+
+// ─── HUMANS / LOGIN ───
+function renderLogin(){
+  const list=document.getElementById('who-list');
+  if(!S.humans?.length){list.innerHTML='<div style="font-size:.7rem;color:var(--muted);padding:8px;">No players yet — add yourself below ↓</div>';}
+  else{
+    list.innerHTML=S.humans.map(h=>`<div class="who-item" onclick="loginAs('${h.name}')">
+      <div class="dot" style="background:${h.color}"></div>
+      <div class="who-name" style="color:${h.color}">${h.name}</div>
+      <div style="font-size:.7rem;color:var(--muted);">that's me →</div>
+    </div>`).join('');
+  }
+  renderColorPicker();
+}
+function loginAs(name){
+  const h=S.humans.find(x=>x.name===name);
+  if(!h)return;
+  myName=h.name;selColor=h.color;
+  localStorage.setItem('pyp_myname',myName);
+  localStorage.setItem('pyp_mycolor',selColor);
+  enterGame();
+}
+function addMe(){
+  const n=document.getElementById('ninp').value.trim();
+  if(!n)return;
+  if(S.humans.find(h=>h.name.toLowerCase()===n.toLowerCase())){toast('NAME TAKEN','Pick from list above','');return;}
+  if(!S.humans)S.humans=[];
+  S.humans.push({name:n,color:selColor});
+  if(!S.squads)S.squads={};
+  S.squads[n]=[null,null,null];
+  S.scores[n]=0;
+  myName=n;
+  localStorage.setItem('pyp_myname',myName);
+  localStorage.setItem('pyp_mycolor',selColor);
+  push();
+  enterGame();
+}
+function switchUser(){
+  if(!confirm('Switch to a different user? (Your squad stays.)'))return;
+  myName=null;
+  localStorage.removeItem('pyp_myname');
+  document.getElementById('game-sec').style.display='none';
+  document.getElementById('login-sec').style.display='block';
+  renderLogin();
+}
+function enterGame(){
+  if(!S.started){S.started=true;push();}
+  document.getElementById('login-sec').style.display='none';
+  document.getElementById('game-sec').style.display='block';
+  renderAll();
+  doRefresh();
+}
+
+function renderColorPicker(){
+  const el=document.getElementById('cpick');
+  if(!el)return;
+  el.innerHTML=PAL.map(c=>`<div class="copt${selColor===c?' sel':''}" style="background:${c}" onclick="pickC('${c}')"></div>`).join('');
+}
+function pickC(c){selColor=c;localStorage.setItem('pyp_mycolor',c);renderColorPicker();}
+
+// ─── SQUAD PICKS ───
+function openSquadPick(slotIdx){
+  pickingSlot=slotIdx;
+  document.getElementById('pick-t').textContent=`SQUAD SLOT ${slotIdx+1}`;
+  document.getElementById('pick-s').textContent='Pick any player. They earn points only while on court.';
+  document.getElementById('pick-mod').style.display='block';
+  renderPickGrid();
+}
+function setPickTab(t){pickTab=t;document.getElementById('pmtab-h').classList.toggle('active',t==='h');document.getElementById('pmtab-a').classList.toggle('active',t==='a');renderPickGrid();}
+function renderPickGrid(){
+  const list=ROSTERS[pickTab]||[];
+  if(!list.length){document.getElementById('pick-grid').innerHTML='<div style="font-size:.7rem;color:var(--muted);padding:12px;text-align:center;">Loading rosters from NBA API...</div>';return;}
+  document.getElementById('pick-grid').innerHTML='<div class="pgrid">'+list.map(p=>{
+    const owners=S.humans.filter(h=>S.squads[h.name]?.find(s=>s?.playerId==p.playerId));
+    return`<div class="pc ${p.oncourt?'oncourt':''}" onclick="pickPlayer(${p.playerId},'${pickTab}','${escape(p.name)}','${escape(p.pos||'')}','${escape(p.num||'')}')">
+      ${p.oncourt?'<div class="ocbadge">ON</div>':''}
+      <div class="pn">${p.name}</div>
+      <div class="pp">${p.pos||'—'}${p.num?' · #'+p.num:''}</div>
+      <div class="pgp ${pickTab}">${p.stats?.points||0}</div>
+      <div class="pst">${p.stats?.reboundsTotal||0}r·${p.stats?.assists||0}a${p.stats?.steals?'·'+p.stats.steals+'s':''}${p.stats?.blocks?'·'+p.stats.blocks+'b':''}</div>
+      ${owners.length?`<div class="otags">${owners.map(o=>`<span class="otag" style="background:${ha(o.color,.15)};border-color:${ha(o.color,.5)};color:${o.color}">${o.name}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('')+'</div>';
+}
+function pickPlayer(playerId,team,name,pos,num){
+  if(pickingSlot===null||!myName)return;
+  if(!S.squads[myName])S.squads[myName]=[null,null,null];
+  S.squads[myName][pickingSlot]={playerId,name:unescape(name),pos:unescape(pos),num:unescape(num),team};
+  cm('pick-mod');
+  push();renderAll();
+  toast('PICKED',unescape(name)+' → slot '+(pickingSlot+1),'');
+}
+function clearSlot(idx){
+  if(!confirm('Clear this squad slot?'))return;
+  S.squads[myName][idx]=null;
+  push();renderAll();
+}
+
+// ─── RENDER ───
+function renderAll(){renderSB();renderYou();renderSquad();renderLB();renderPool();renderFeed();}
+function renderSB(){
+  document.getElementById('sc-h').textContent=LIVE.score.h;
+  document.getElementById('sc-a').textContent=LIVE.score.a;
+  document.getElementById('clk').textContent=LIVE.clock||'--';
+  document.getElementById('qtr').textContent=LIVE.status==='final'?'FINAL':LIVE.period?'Q'+LIVE.period:'PRE';
+  document.getElementById('tn-h').textContent=LIVE.homeTri||'HOME';
+  document.getElementById('tn-a').textContent=LIVE.awayTri||'AWAY';
+  document.getElementById('sub').textContent=`🏀 ${LIVE.homeName||'?'} vs ${LIVE.awayName||'?'} · SQUAD MODE`;
+  const ps=LIVE.byP||{};const ks=Object.keys(ps).sort();
+  document.getElementById('tq-h').innerHTML=ks.map(k=>`<div class="qc">Q${k}:${ps[k].h}</div>`).join('');
+  document.getElementById('tq-a').innerHTML=ks.map(k=>`<div class="qc">Q${k}:${ps[k].a}</div>`).join('');
+}
+function renderYou(){
+  const me=S.humans?.find(h=>h.name===myName);
+  if(!me)return;
+  document.getElementById('you-dot').style.background=me.color;
+  document.getElementById('you-name').textContent=myName;
+  document.getElementById('you-name').style.color=me.color;
+  document.getElementById('you-score').textContent=(S.scores[myName]||0).toFixed(1);
+}
+function renderSquad(){
+  if(!myName)return;
+  const sq=S.squads?.[myName]||[null,null,null];
+  document.getElementById('squad').innerHTML=[0,1,2].map(i=>{
+    const slot=sq[i];
+    if(!slot)return`<div class="squadslot" onclick="openSquadPick(${i})"><div class="sslbl">SLOT ${i+1}</div><div class="ssn">+ PICK</div></div>`;
+    const p=findPlayerById(slot.playerId);
+    const on=p?.oncourt;
+    const cls=on?'filled locked':'filled off';
+    return`<div class="squadslot ${cls}" onclick="openSquadPick(${i})">
+      <div class="ssn">${slot.name}</div>
+      <div class="ssr">${p?.stats?.points||0}</div>
+      <div class="sslbl">${slot.team==='h'?LIVE.homeTri:LIVE.awayTri} ${slot.pos||''}</div>
+      ${on?'<div class="ssgo">🟢 ON COURT</div>':'<div class="ssoff">⚠️ SUBBED OUT</div>'}
+    </div>`;
+  }).join('');
+}
+function renderLB(){
+  if(!S.humans)return;
+  const sorted=[...S.humans].sort((a,b)=>(S.scores[b.name]||0)-(S.scores[a.name]||0));
+  document.getElementById('lbg').innerHTML=sorted.map((h,i)=>{
+    const sq=S.squads?.[h.name]||[];
+    const liveCount=sq.filter(s=>{const p=s&&findPlayerById(s.playerId);return p?.oncourt;}).length;
+    const me=h.name===myName?'me':'';
+    return`<div class="lbc ${me}"><div class="lbs" style="background:${h.color}"></div>
+      <div class="lbrk ${i===0?'top':''}">${['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'][i]||'#'+(i+1)}</div>
+      <div class="lbhn" style="color:${h.color}">${h.name}</div>
+      <div class="lbsc">${(S.scores[h.name]||0).toFixed(1)}</div>
+      <div class="lbpk">${liveCount}/3 on court</div>
+    </div>`;
+  }).join('');
+}
+function setTab(t){viewTab=t;document.getElementById('tab-h').classList.toggle('active',t==='h');document.getElementById('tab-a').classList.toggle('active',t==='a');renderPool();}
+function renderPool(){
+  const list=ROSTERS[viewTab]||[];
+  document.getElementById('poolhdr').textContent=`${viewTab==='h'?LIVE.homeName:LIVE.awayName} · ${list.filter(p=>p.oncourt).length} on court`;
+  if(!list.length){document.getElementById('psec').innerHTML='<div class="nof">Loading rosters from NBA API…</div>';return;}
+  document.getElementById('psec').innerHTML='<div class="pgrid">'+list.map(p=>{
+    const owners=S.humans.filter(h=>S.squads[h.name]?.find(s=>s?.playerId==p.playerId));
+    return`<div class="pc ${p.oncourt?'oncourt':''}">
+      ${p.oncourt?'<div class="ocbadge">ON</div>':''}
+      <div class="pn">${p.name}</div>
+      <div class="pp">${p.pos||'—'}${p.num?' · #'+p.num:''}</div>
+      <div class="pgp ${viewTab}">${p.stats?.points||0}</div>
+      <div class="pst">${p.stats?.reboundsTotal||0}r·${p.stats?.assists||0}a${p.stats?.steals?'·'+p.stats.steals+'s':''}${p.stats?.blocks?'·'+p.stats.blocks+'b':''}</div>
+      ${owners.length?`<div class="otags">${owners.map(o=>`<span class="otag" style="background:${ha(o.color,.15)};border-color:${ha(o.color,.5)};color:${o.color}">${o.name}</span>`).join('')}</div>`:''}
+    </div>`;
+  }).join('')+'</div>';
+}
+function renderFeed(){
+  const el=document.getElementById('feed');if(!el)return;
+  const entries=Object.values(S.log||{}).sort((a,b)=>b.t-a.t).slice(0,30);
+  if(!entries.length){el.innerHTML='<div class="nof">Events appear here automatically</div>';return;}
+  el.innerHTML=entries.map(e=>{
+    const h=S.humans?.find(h=>h.name===e.who);const c=h?h.color:'#666';
+    const pc=e.pts>=0?'var(--green)':'var(--red)';
+    return`<div class="fe" style="border-left-color:${c}">${e.time?`<span class="fet">${e.time}${e.api?' 🔴':''}</span>`:''}<span class="few" style="color:${c}">${e.who||'API'}</span><span class="fed">${e.desc}</span>${e.pts!==0?`<span class="fep" style="color:${pc}">${e.pts>0?'+':''}${e.pts}</span>`:''}</div>`;
+  }).join('');
+}
+
+// ─── HELPERS ───
+function cm(id){document.getElementById(id).style.display='none';}
+function openRules(){document.getElementById('rules-mod').style.display='block';}
+function confirmReset(){if(confirm('Reset ALL scores, picks, and players?')){S={gameId:null,started:false,humans:[],squads:{},scores:{},log:{},apiSeen:{},minuteSeen:{},version:'squad-v1'};push();location.reload();}}
+function ha(hex,a){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}catch(e){return hex;}}
+function escape(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'\\"');}
+function toast(t,b,x){const w=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';el.innerHTML=`<div class="ttt">${t}</div><div class="ttb">${b}</div>${x?`<div class="ttp" style="color:var(--yellow)">${x}</div>`:''}`;w.appendChild(el);setTimeout(()=>el.remove(),3700);}
+function bigToast(hn,desc,pts){const h=S.humans?.find(h=>h.name===hn);const c=h?h.color:'#fff';const pc=pts>0?'var(--green)':'var(--red)';const w=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';el.style.borderColor=c;el.innerHTML=`<div class="ttt" style="color:${c}">${hn}</div><div class="ttb">${desc}</div><div class="ttp" style="color:${pc}">${pts>0?'+':''}${pts} pts</div>`;w.appendChild(el);setTimeout(()=>el.remove(),4500);}
+
+// ─── BOOT ───
+(async function boot(){
+  badge('spin');
+  try{
+    const r=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
+    if(r.ok){const d=await r.json();if(d.record?.version==='squad-v1'){S=d.record;}}
+  }catch(e){}
+  if(!S.squads)S.squads={};
+  if(!S.humans)S.humans=[];
+
+  // Check if user is logged in AND in roster
+  if(myName&&S.humans.find(h=>h.name===myName)){
+    document.getElementById('game-sec').style.display='block';
+    await loadGame();
+    renderAll();
+  } else {
+    document.getElementById('login-sec').style.display='block';
+    renderLogin();
+    // Still load game in background
+    await loadGame();
+  }
+})();
+</script>
+</body>
+</html>
